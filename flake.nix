@@ -20,7 +20,27 @@
         };
         devShell = with pkgs; mkShell rec {
           nativeBuildInputs = [ freetype pkg-config cmake wayland libGL libxkbcommon ];
-          buildInputs = [ cargo rustc rustfmt pre-commit rustPackages.clippy wayland libGL libxkbcommon ];
+          buildInputs = [
+            cargo
+            rustc
+            rustfmt
+            pre-commit
+            rustPackages.clippy
+            wayland
+            libGL
+            libxkbcommon
+            xorg.libX11 
+            xorg.libXcursor 
+            xorg.libXrandr
+            xorg.libXi 
+            libxkbcommon 
+            xorg.libxcb  
+            vulkan-loader
+            glfw
+            (writeShellScriptBin "pixelpwnr" ''
+              WINIT_UNIX_BACKEND=x11 cargo run --release -- $@
+              '')
+          ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
           LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
         };
